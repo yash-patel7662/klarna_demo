@@ -1,0 +1,98 @@
+<html>
+
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://x.klarnacdn.net/kp/lib/v1/api.js" async></script>
+</head>
+
+<body>
+
+	<script type="text/javascript">
+		//The following method initializes the Klarna Payments JS library
+		window.klarnaAsyncCallback = function () {
+			Klarna.Payments.init({
+				// client_token for session klarna api
+				client_token: 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjgyMzA1ZWJjLWI4MTEtMzYzNy1hYTRjLTY2ZWNhMTg3NGYzZCJ9.eyJzZXNzaW9uX2lkIjoiMjBhNDZiM2YtYjE1OC0xZjg4LTk1NDQtMTgwNDhiOTQwYjVjIiwiYmFzZV91cmwiOiJodHRwczovL2tsYXJuYS1wYXltZW50cy1uYS5wbGF5Z3JvdW5kLmtsYXJuYS5jb20vcGF5bWVudHMiLCJkZXNpZ24iOiJrbGFybmEiLCJsYW5ndWFnZSI6ImVuIiwicHVyY2hhc2VfY291bnRyeSI6IlVTIiwidHJhY2VfZmxvdyI6ZmFsc2UsImVudmlyb25tZW50IjoicGxheWdyb3VuZCIsIm1lcmNoYW50X25hbWUiOiJZb3VyIGJ1c2luZXNzIG5hbWUiLCJzZXNzaW9uX3R5cGUiOiJQQVlNRU5UUyIsImNsaWVudF9ldmVudF9iYXNlX3VybCI6Imh0dHBzOi8vbmEucGxheWdyb3VuZC5rbGFybmFldnQuY29tIiwiZXhwZXJpbWVudHMiOlt7Im5hbWUiOiJpbi1hcHAtc2RrLW5ldy1pbnRlcm5hbC1icm93c2VyIiwicGFyYW1ldGVycyI6eyJ2YXJpYXRlX2lkIjoibmV3LWludGVybmFsLWJyb3dzZXItZW5hYmxlIn19XX0.REMzWA5mZ6YjH8l_rTDXDFwII3NtCqmcZMS6_DuhatorEHzKkmRpnxr_ZuT5WSjuVTBISwvlTknqubGiMMSa7H_BrC2aY3z1JZ1yY57ZW9nSLc3aDy75z9xCesKkQr_gm2ZnYhDOhONnYlB9zJtrFouzmXqO1in4y9AjgKuKkmzfkeSoar3mhRScCB7Sf6qqqyHnNY2857bTWZrE47COVtDQ-BkcVeyyhMAjff-I1UvDmt-CDgB4GbVFupdMLSV1KwoonlG2p5zD4H_pbZTAPUM3twZDcLtd8GR0Na_NUzHyeSDPVK6bBffp03Kscb7zIP684hmlxCfjSU538aS0WQ'
+			});
+			console.log("Payments initialized");
+			//The following method loads the payment_method_category in the container with the id of 'klarna_container'
+			Klarna.Payments.load({
+				container: '#klarna_container',
+				payment_method_category: 'pay_later'
+			}, function (res) {
+				console.log("Load function called")
+				console.debug(res);
+			});
+		};
+
+		/*The following is the authorize function, which triggers Klarna to perform a risk assessment of the purchase
+		  The successful response of this risk assessment is an authorization token, which in this example is logged in the console
+		*/
+		$(function () {
+			$("button.authorize").on('click', function () {
+				Klarna.Payments.authorize({
+					payment_method_category: 'pay_later'
+				}, {
+					billing_address: {
+						given_name: "Jane",
+						family_name: "Doe",
+						email: "jane@doe.com",
+						title: "Ms",
+						street_address: "512 City Park Ave",
+						postal_code: "43215",
+						city: "Columbus",
+						region: "oh",
+						phone: "6142607295",
+						country: "US"
+					},
+					order_amount: 20000,
+					order_tax_amount: 0,
+					order_lines: [{
+						type: "physical",
+						reference: "19-402",
+						name: "black T-Shirt",
+						quantity: 2,
+						unit_price: 5000,
+						tax_rate: 0,
+						total_amount: 10000,
+						total_discount_amount: 0,
+						total_tax_amount: 0
+					},
+					{
+						type: "physical",
+						reference: "19-402",
+						name: "red trousers",
+						quantity: 1,
+						unit_price: 10000,
+						tax_rate: 0,
+						total_amount: 10000,
+						total_discount_amount: 0,
+						total_tax_amount: 0
+					}],
+				}, function (res) {
+					console.log("Response from the authorize call:")
+					console.log(res)
+
+				})
+			})
+		})
+	</script>
+
+
+	<div style="width: 500px; margin: auto; padding-top: 150px; padding-bottom: 30px;">
+		<img src="https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg"
+			style="width: 500px; margin: auto;">
+	</div>
+
+	<!--Klarna container-->
+	<div id="klarna_container" style="width: 500px; margin: auto;"></div>
+	<div style="width: 500px; margin: auto;">
+		<!--Button to trigger authorize call-->
+		<button class="authorize" style="width: 500px; height: 50px; margin: auto;">Your Buy Button</button>
+	</div>
+
+
+
+</body>
+
+</html>
